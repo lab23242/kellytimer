@@ -4,7 +4,9 @@ kellytimer is a small timer for focused work. A Chinese landscape painting slowl
 
 ## 1. Download it
 
-Open the download page you were sent (it ends in `/releases`). Under **Assets**, click the file whose name ends in **`-setup.exe`**, for example `kellytimer_0.1.0_x64-setup.exe`. It's a small file and downloads in a few seconds.
+Open the download page: **https://github.com/lab23242/kellytimer/releases/latest**
+
+Under **Assets**, click the file whose name ends in **`-setup.exe`**, for example `kellytimer_0.1.0_x64-setup.exe`. It's a small file and downloads in a few seconds.
 
 ## 2. Open it
 

@@ -1,5 +1,7 @@
 # kellytimer
 
+**Download for Windows:** https://github.com/lab23242/kellytimer/releases/latest (the `-setup.exe` file). Install help: [INSTALL.md](INSTALL.md).
+
 A small, frameless Pomodoro timer for Windows 11. Behind the time, an endless procedural shan-shui (山水) landscape from [shan-shui-inf](https://github.com/LingDong-/shan-shui-inf) pans past while you focus, on an old-scroll yellow paper. Each focus session travels exactly 48 landscape chunks (about 4.7 px/s in the small window; adjustable in Settings). Each day has its own painting, and today's journey picks up where you left it.
 
 End-user install instructions are in [INSTALL.md](INSTALL.md). Every judgement call made while building it is in [DECISIONS.md](DECISIONS.md).
