@@ -7,6 +7,7 @@
 //   render=svg    draw tiles as live SVG instead of canvases (for benchmarking)
 //   nopersist=1   don't read or write saved state
 //   quiet=1       no chimes, toasts or Rust alarms (for long accelerated runs)
+//   fps=N         fixed scroll frame rate instead of the speed-based one (benchmarking)
 
 function parse(query) {
   const p = new URLSearchParams(query);
@@ -18,6 +19,7 @@ function parse(query) {
     render: p.get("render") === "svg" ? "svg" : "canvas",
     nopersist: p.get("nopersist") === "1",
     quiet: p.get("quiet") === "1",
+    fps: num("fps"),
   };
 }
 
@@ -31,6 +33,7 @@ export const debug = {
   render: fromUrl.render === "svg" || fromEnv.render === "svg" ? "svg" : "canvas",
   nopersist: fromUrl.nopersist || fromEnv.nopersist,
   quiet: fromUrl.quiet || fromEnv.quiet,
+  fps: fromUrl.fps || fromEnv.fps,
 };
 debug.persist = !debug.nopersist && debug.timescale === 1;
 

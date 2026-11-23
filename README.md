@@ -1,6 +1,6 @@
 # Shanshui
 
-A small, frameless Pomodoro timer for Windows 11. Behind the time, an endless procedural shan-shui (山水) landscape from [shan-shui-inf](https://github.com/LingDong-/shan-shui-inf) scrolls slowly while you focus. Each focus session travels exactly three landscape chunks. Each day has its own painting, and today's journey picks up where you left it.
+A small, frameless Pomodoro timer for Windows 11. Behind the time, an endless procedural shan-shui (山水) landscape from [shan-shui-inf](https://github.com/LingDong-/shan-shui-inf) pans past while you focus, on an old-scroll yellow paper. Each focus session travels exactly 48 landscape chunks (about 4.7 px/s in the small window; adjustable in Settings). Each day has its own painting, and today's journey picks up where you left it.
 
 End-user install instructions are in [INSTALL.md](INSTALL.md). Every judgement call made while building it is in [DECISIONS.md](DECISIONS.md).
 
@@ -32,9 +32,9 @@ src-tauri/src/
 
 **Data flow.** The timer is a pure state machine: `{phase, status, endsAt, remainingMs, …}`. Remaining time is always `endsAt - now`. The scroll position is `journey.anchor + speed(phase) × elapsed`, so it is also derived, never accumulated. Every transition re-anchors the journey (`carry`), so skip, reset, phase change and speed change never make the painting jump. State is saved to the store file (`shanshui.json` in the app data folder) on every transition.
 
-**Timing.** When a phase starts, the frontend asks Rust to `schedule_alarm` at the real wall-clock end time. Rust waits in 5-second slices against the system clock. At the end it shows the toast, plays the chime and emits `alarm`. If the end is more than 90 s in the past (the laptop slept), it stays silent and the UI just shows the phase as finished. While the window is visible, the frontend wakes only when the displayed second changes or the painting moves one device pixel. While it is hidden it does no work at all.
+**Timing.** When a phase starts, the frontend asks Rust to `schedule_alarm` at the real wall-clock end time. Rust waits in 5-second slices against the system clock. At the end it shows the toast, plays the chime and emits `alarm`. If the end is more than 90 s in the past (the laptop slept), it stays silent and the UI just shows the phase as finished. While the window is visible, the timer logic wakes once per displayed second, and the scroller moves the strip on its own speed-paced timer. While it is hidden it does no work at all.
 
-**Rendering.** See DECISIONS.md for the benchmark. In short: the worker generates a tile's SVG, the main thread decodes it as an image and, in idle time, draws it once onto an opaque canvas with the paper texture multiplied underneath. The strip of canvases moves with `translate3d`, snapped to whole device pixels. At most 12 tiles exist, and the worker caches at most 12 chunks.
+**Rendering.** See DECISIONS.md for the benchmark. In short: the worker generates a tile's SVG, the main thread decodes it as an image and, in idle time, draws it once onto an opaque canvas: the old-scroll-tinted paper texture with the ink multiplied over it twice (darker lines). The strip of canvases moves with a sub-pixel `translate3d` from a timer whose rate follows the speed (at most 0.4 px per update, 2–30 updates/s, about 12/s by default). When the strip stops, it snaps to whole device pixels so the painting is crisp. At most 12 tiles exist, and the worker caches at most 12 chunks.
 
 ## The shan-shui wrapper
 

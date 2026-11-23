@@ -32,7 +32,19 @@ Judgement calls made while building Shanshui, grouped by area. Numbers come from
 
   At real speed the two are within measurement noise of each other (0.25–1.41% of one core), and both are far under the 3% target. With more motion and generation (10×), canvas is about 18% cheaper. The deciding factor is the DOM: a live-SVG strip keeps about 62,000 `<polyline>` nodes (18 MB of markup for 7 tiles), against 7 canvases. Raw data: `bench/bench-5runs.json`, `bench/bench-alternating.json`. A mid-range 4–8 core laptop will show a larger per-machine share than this desktop, but the per-core figure is the one to compare against.
 - **The paper is baked into each tile with `multiply`.** Upstream draws its SVG with `mix-blend-mode: multiply` because mountains use white fills to hide what's behind them. Multiplying onto the paper reproduces that, and opaque tiles are cheaper to composite. The paper pattern is aligned to the whole strip, so tile edges don't show.
-- **Device-pixel stepping instead of continuous animation.** A focus session moves about 440 CSS px in 25 minutes at the small size, under 0.3 px/s. The strip's `translate3d` is snapped to whole device pixels and only updated when that changes, about once every 2–3 s at real speed. The update loop wakes only for the next displayed second, the next pixel step or the phase end. There is no `requestAnimationFrame` loop. Snapping also avoids faint seams between separately resampled tiles.
+- **Scroll speed: 48 chunks per focus session** (changed from the brief's example of 3 after the first look: 3 chunks moved under 0.3 px/s, which nobody could see). 48 chunks in 25 minutes is about 4.7 px/s in the small window: a calm pan you can see. The Settings speed slider (0.25×–4×) scales it. Breaks still drift at 4% of focus speed.
+- **Smooth motion paced by speed.** A timer moves the strip with a sub-pixel `translate3d` (no re-rasterising) at most 0.4 CSS px per update, so the frame rate follows the speed. That is about 12 updates/s by default, between 2 and 30. When the strip stops, it snaps to whole device pixels so the painting is crisp. Tiles overlap by 2 device px so no seam shows at sub-pixel offsets. Measured in the real app (WebView2, 120 s runs, same machine as below):
+
+  | motion method at default speed | % of one core |
+  |---|---|
+  | continuous 60 fps Web Animation (compositor) | 15.9 |
+  | Web Animation with `steps()` capped at 6 / 12 / 20 / 30 fps | 5.4 / 8.1 / 5.1 / 5.9 |
+  | JS timer at fixed 10 / 15 / 24 fps | 3.1 / 5.5 / 7.0 |
+  | **chosen: JS timer paced by speed (≈12 fps)** | **3.7, 3.4** |
+  | same at 10× speed (30 fps cap, plus heavy tile generation) | 6.8 |
+  | paused | 0.25 |
+
+  A compositor animation ticks on every vsync even when its stepped value doesn't change, so capping its frame rate saved little. A plain timer does no work between updates, and the cost tracks the update rate (about 0.3% of a core per update per second). On this 20-thread desktop the chosen version is under 0.2% of the machine. On a 4-core/8-thread laptop expect roughly 1–2% in Task Manager, still under the 3% target. Raw data: `bench/bench-motion.json`. The original pixel-stepping numbers below are from the first, much slower speed.
 - **Bounded memory:** at most 12 tiles in the DOM (1 behind, 1.25 viewports ahead), and at most 12 chunks cached in the worker. Chunks that can no longer reach the view are dropped as it advances. Canvas backing stores are released (`width = 0`) when a tile is removed.
 - **Hidden means idle:** on `visibilitychange` or the Rust `visibility` event (tray hide/show), the loop stops and no tiles are generated. Rust's alarm wakes the page at the phase end.
 
@@ -69,8 +81,9 @@ Judgement calls made while building Shanshui, grouped by area. Numbers come from
 ## Look and feel
 
 - **Concept: the time is the painting's inscription.** It sits top-left in the sky, where painters leave paper bare for a poem, on a soft paper wash for legibility. Each finished focus session is a small cinnabar seal stamped after it, the way inscriptions are signed. The painting's paper texture is the window background.
-- **Palette** from the painting and its pigments: paper `#ECE2CC`, ink `#2B2824`, wash grey `#6F6A62`, cinnabar `#B0352A` (focus progress, seals, toggles), and indigo wash `#475766` (huaqing, the blue-grey used for distance) for the time during breaks. Breaks also raise a mist of paper colour over the painting.
-- **Type:** Cormorant Garamond 500 (lining, tabular figures) for the time; EB Garamond for labels and settings, in sentence case and italic for secondary text. Both are bundled (SIL OFL).
+- **Palette** from the painting and its pigments, darkened after the first look for contrast: old-scroll paper (upstream's texture multiplied by `rgb(247 229 184)`, about `#E8CD93`), ink `#1C1916`, wash `#4F483E`, cinnabar `#A92F24` (focus progress, seals, toggles), and indigo wash `#2F3D4A` (huaqing, the blue-grey used for distance) for the time during breaks. Breaks also raise a mist of paper colour over the painting. The scroll edge has a browned inner vignette instead of a border.
+- **Darker landscape lines:** when a tile is rasterised, the ink layer is multiplied over the paper twice instead of once. Upstream's light grey strokes get darker (value → value²), while its white occluding fills stay white, so the paper still shows through them. This costs nothing at run time because each tile is drawn once.
+- **Type:** Cormorant Garamond 600 (lining, tabular figures; 600 rather than 500 for contrast on the yellow paper) for the time; EB Garamond for labels and settings, in sentence case and italic for secondary text. Both are bundled (SIL OFL).
 - **Settings toggles are seals:** an empty frame when off, stamped cinnabar when on.
 - **Plain English everywhere:** "See-through" (not opacity), "Stay in front of other windows", "Start the next part by itself", "Start today's journey again" (asks for a second click before acting).
 - **Settings scroll inside the window** rather than growing it, so the timer never jumps around the screen.

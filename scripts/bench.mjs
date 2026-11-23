@@ -15,6 +15,7 @@ const RUNS = [
   { name: "svg, real speed", query: "render=svg&nopersist=1&quiet=1" },
   { name: "canvas, 10x speed", query: "render=canvas&timescale=10&quiet=1" },
   { name: "svg, 10x speed", query: "render=svg&timescale=10&quiet=1" },
+  { name: "canvas, real speed, fixed 30 fps", query: "fps=30&nopersist=1&quiet=1" },
 ];
 
 const order = (process.argv[4] || RUNS.map((_, i) => i).join(",")).split(",").map(Number);

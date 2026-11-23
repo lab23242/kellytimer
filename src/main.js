@@ -1,6 +1,6 @@
 // App controller: owns the settings, timer and journey state, wires them to the view,
 // the landscape scroller and the OS bridge.
-import "@fontsource/cormorant-garamond/500.css";
+import "@fontsource/cormorant-garamond/600.css";
 import "@fontsource/eb-garamond/400.css";
 import "@fontsource/eb-garamond/400-italic.css";
 import "./styles.css";
@@ -192,7 +192,7 @@ function loop() {
   schedule();
 }
 
-/** Next wake-up: when the shown second changes or the scroll moves one device pixel. */
+/** Next wake-up: when the shown second changes (the compositor animates the scroll). */
 function schedule() {
   clearTimeout(loopTimer);
   loopTimer = null;
@@ -203,12 +203,7 @@ function schedule() {
   }
   const now = clock.now();
   const remaining = T.remainingMs(timer, now);
-  let wait = ((remaining - 1) % 1000) + 1; // until the displayed second changes
-  if (!ui.compact) {
-    const devPxPerMs = phaseSpeed(timer.phase, settings) * scroller.scale() * scroller.dpr();
-    if (devPxPerMs > 0) wait = Math.min(wait, 1 / devPxPerMs);
-  }
-  wait = Math.min(wait, remaining);
+  const wait = Math.min(((remaining - 1) % 1000) + 1, remaining); // until the displayed second changes
   loopTimer = setTimeout(loop, Math.max(MIN_FRAME_MS, wait / clock.scale));
 }
 
@@ -247,7 +242,9 @@ function render(now = clock.now()) {
     playBtn.title = playing ? "Pause" : "Start";
   }
 
-  scroller.setPosition(position(journey, timer, settings, now));
+  // world units per real millisecond (app time may run faster in debug mode)
+  const speed = timer.status === "running" ? phaseSpeed(timer.phase, settings) * clock.scale : 0;
+  scroller.setMotion(position(journey, timer, settings, now), speed);
 }
 
 function applyWindowSize() {
@@ -353,7 +350,7 @@ async function boot() {
 
   const paper = makePaper();
   document.documentElement.style.setProperty("--paper", `url(${paper.toDataURL()})`);
-  scroller = createScroller({ host: $("landscape"), paper, mode: debug.render });
+  scroller = createScroller({ host: $("landscape"), paper, mode: debug.render, fps: debug.fps });
   scroller.setSeed(seedForDay(day));
   new ResizeObserver(([entry]) => {
     const { width, height } = entry.contentRect;

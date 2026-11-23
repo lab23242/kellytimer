@@ -1,12 +1,14 @@
 /* Shanshui. The time is the painting's inscription; finished sessions are seals. */
 
 :root {
-  --paper-tone: #ece2cc;
-  --ink: #2b2824;
-  --wash: #6f6a62;
-  --cinnabar: #b0352a;
-  --indigo: #475766; /* huaqing, the blue-grey wash used for distance in shan-shui */
-  --halo: rgb(236 226 204 / 0.92);
+  /* old-scroll paper: upstream's texture multiplied by PAPER_TINT (scroller.js) */
+  --paper-rgb: 232 205 147;
+  --paper-tone: rgb(var(--paper-rgb));
+  --ink: #1c1916;
+  --wash: #4f483e;
+  --cinnabar: #a92f24;
+  --indigo: #2f3d4a; /* huaqing, the blue-grey wash used for distance in shan-shui */
+  --halo: rgb(var(--paper-rgb) / 0.95);
   --radius: 12px;
   --serif-display: "Cormorant Garamond", "EB Garamond", Georgia, serif;
   --serif-text: "EB Garamond", Georgia, serif;
@@ -53,8 +55,8 @@ body.browser .frame {
   border-radius: var(--radius);
   background: var(--paper-tone) var(--paper);
   container-type: size;
-  /* aged paper edge rather than a border */
-  box-shadow: inset 0 0 28px rgb(120 96 58 / 0.2);
+  /* aged, browned scroll edge rather than a border */
+  box-shadow: inset 0 0 30px rgb(122 82 32 / 0.32);
   isolation: isolate;
 }
 
@@ -91,7 +93,7 @@ div.tile {
 
 .mist {
   pointer-events: none;
-  background: linear-gradient(to top, rgb(236 226 204 / 0.7), rgb(236 226 204 / 0.4) 60%, rgb(236 226 204 / 0.25));
+  background: linear-gradient(to top, rgb(var(--paper-rgb) / 0.7), rgb(var(--paper-rgb) / 0.4) 60%, rgb(var(--paper-rgb) / 0.25));
   opacity: 0;
   transition: opacity 3s ease;
 }
@@ -117,7 +119,7 @@ div.tile {
   top: -7cqh;
   width: 75%;
   height: 160%;
-  background: radial-gradient(ellipse 70% 60% at 18% 30%, rgb(236 226 204 / 0.82), rgb(236 226 204 / 0.5) 55%, rgb(236 226 204 / 0) 100%);
+  background: radial-gradient(ellipse 70% 60% at 18% 30%, rgb(var(--paper-rgb) / 0.82), rgb(var(--paper-rgb) / 0.5) 55%, rgb(var(--paper-rgb) / 0) 100%);
 }
 .frame.compact .inscription::before {
   display: none;
@@ -131,16 +133,17 @@ div.tile {
   pointer-events: auto;
   cursor: pointer;
   font-family: var(--serif-display);
-  font-weight: 500;
+  font-weight: 600;
   font-size: max(30px, 23cqh);
   line-height: 0.95;
   letter-spacing: 0.01em;
   font-variant-numeric: lining-nums tabular-nums;
   color: var(--ink);
   text-shadow:
-    0 0 2px var(--halo),
-    0 0 6px var(--halo),
-    0 0 14px rgb(236 226 204 / 0.75);
+    0 0 1px var(--halo),
+    0 0 3px var(--halo),
+    0 0 7px var(--halo),
+    0 0 16px rgb(var(--paper-rgb) / 0.85);
   transition: color 1.6s ease;
   outline: none;
   border-radius: 4px;
@@ -153,21 +156,22 @@ div.tile {
 }
 .frame[data-status="paused"] .time,
 .frame[data-status="idle"] .time {
-  color: rgb(43 40 36 / 0.82);
+  color: rgb(28 25 22 / 0.9);
 }
 .frame[data-phase="break"][data-status="paused"] .time {
-  color: rgb(71 87 102 / 0.82);
+  color: rgb(47 61 74 / 0.9);
 }
 
 .phase {
   margin: 0.3em 0 0 0.1em;
   font-style: italic;
-  font-size: max(11.5px, 6cqh);
+  font-size: max(12px, 6.2cqh);
   line-height: 1.25;
-  color: var(--wash);
+  color: #352f27;
   text-shadow:
-    0 0 2px var(--halo),
-    0 0 6px var(--halo);
+    0 0 1px var(--halo),
+    0 0 3px var(--halo),
+    0 0 7px var(--halo);
   max-width: 24em;
 }
 
@@ -208,7 +212,7 @@ div.tile {
   display: flex;
   padding: 2px;
   border-radius: 999px;
-  background: rgb(236 226 204 / 0.82);
+  background: rgb(var(--paper-rgb) / 0.82);
   opacity: 0;
   transition: opacity 0.35s ease;
 }
@@ -225,14 +229,14 @@ div.tile {
   border: 0;
   border-radius: 50%;
   background: transparent;
-  color: rgb(43 40 36 / 0.78);
+  color: rgb(28 25 22 / 0.78);
   cursor: pointer;
   transition:
     background-color 0.2s ease,
     color 0.2s ease;
 }
 .controls button:hover {
-  background: rgb(43 40 36 / 0.08);
+  background: rgb(28 25 22 / 0.08);
   color: var(--ink);
 }
 .controls svg {
@@ -337,7 +341,7 @@ select:focus-visible {
     transform 0.25s ease;
   user-select: none;
   scrollbar-width: thin;
-  scrollbar-color: rgb(43 40 36 / 0.25) transparent;
+  scrollbar-color: rgb(28 25 22 / 0.25) transparent;
 }
 .settings.open {
   opacity: 1;
@@ -347,7 +351,7 @@ select:focus-visible {
   width: 6px;
 }
 .settings::-webkit-scrollbar-thumb {
-  background: rgb(43 40 36 / 0.22);
+  background: rgb(28 25 22 / 0.22);
   border-radius: 3px;
 }
 .settings-head {
@@ -358,7 +362,7 @@ select:focus-visible {
 .settings h2 {
   margin: 0;
   font-family: var(--serif-display);
-  font-weight: 500;
+  font-weight: 600;
   font-size: 21px;
 }
 .settings h3 {
@@ -400,7 +404,7 @@ select:focus-visible {
   width: 3em;
   padding: 1px 2px;
   border: 0;
-  border-bottom: 1px solid rgb(43 40 36 / 0.3);
+  border-bottom: 1px solid rgb(28 25 22 / 0.3);
   background: transparent;
   font: inherit;
   color: var(--ink);
@@ -410,7 +414,7 @@ select:focus-visible {
 .settings select {
   padding: 1px 2px;
   border: 0;
-  border-bottom: 1px solid rgb(43 40 36 / 0.3);
+  border-bottom: 1px solid rgb(28 25 22 / 0.3);
   background: transparent;
   font: inherit;
   color: var(--ink);
@@ -424,7 +428,7 @@ select:focus-visible {
   width: 16px;
   height: 16px;
   margin: 0;
-  border: 1.2px solid rgb(43 40 36 / 0.45);
+  border: 1.2px solid rgb(28 25 22 / 0.45);
   border-radius: 3px;
   background: transparent;
   cursor: pointer;
@@ -450,7 +454,7 @@ select:focus-visible {
 }
 .settings input[type="range"]::-webkit-slider-runnable-track {
   height: 2px;
-  background: rgb(43 40 36 / 0.25);
+  background: rgb(28 25 22 / 0.25);
   border-radius: 1px;
 }
 .settings input[type="range"]::-webkit-slider-thumb {
@@ -495,7 +499,7 @@ select:focus-visible {
   position: relative;
   width: 40px;
   height: 26px;
-  border: 1.2px solid rgb(43 40 36 / 0.4);
+  border: 1.2px solid rgb(28 25 22 / 0.4);
   border-radius: 3px;
 }
 .corner {
@@ -505,7 +509,7 @@ select:focus-visible {
   padding: 0;
   border: 0;
   border-radius: 1.5px;
-  background: rgb(43 40 36 / 0.3);
+  background: rgb(28 25 22 / 0.3);
   cursor: pointer;
 }
 .corner:hover {

@@ -5,8 +5,9 @@ import { CHUNK_WIDTH } from "../shanshui/engine.js";
 import { elapsedMs } from "./timer.js";
 import { phaseDurations } from "./settings.js";
 
-/** World distance travelled per focus session, in landscape chunks (x speed setting). */
-export const FOCUS_CHUNKS = 3;
+/** World distance travelled per focus session, in landscape chunks (x speed setting).
+ *  48 chunks in 25 minutes is about 4.7 px/s in the small window: a slow, visible pan. */
+export const FOCUS_CHUNKS = 48;
 /** Break drift as a fraction of focus speed: a near-stop. */
 export const BREAK_SPEED_RATIO = 0.04;
 
