@@ -1,0 +1,554 @@
+/* Shanshui. The time is the painting's inscription; finished sessions are seals. */
+
+:root {
+  --paper-tone: #ece2cc;
+  --ink: #2b2824;
+  --wash: #6f6a62;
+  --cinnabar: #b0352a;
+  --indigo: #475766; /* huaqing, the blue-grey wash used for distance in shan-shui */
+  --halo: rgb(236 226 204 / 0.92);
+  --radius: 12px;
+  --serif-display: "Cormorant Garamond", "EB Garamond", Georgia, serif;
+  --serif-text: "EB Garamond", Georgia, serif;
+  color-scheme: light;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+  font-family: var(--serif-text);
+  color: var(--ink);
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
+}
+
+body {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+body.ready {
+  opacity: 1;
+}
+
+/* In a plain browser (dev, benchmarks) show the window at its real size. */
+body.browser {
+  background: #8a8d8f;
+}
+body.browser .frame {
+  position: relative;
+  inset: auto;
+  width: var(--win-w, 340px);
+  height: var(--win-h, 200px);
+  margin: 40px;
+}
+
+.frame {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--paper-tone) var(--paper);
+  container-type: size;
+  /* aged paper edge rather than a border */
+  box-shadow: inset 0 0 28px rgb(120 96 58 / 0.2);
+  isolation: isolate;
+}
+
+/* ---- landscape ---- */
+
+.landscape,
+.mist {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+.landscape {
+  overflow: hidden;
+  z-index: -1;
+}
+.strip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  will-change: transform;
+  /* only seen in the live-SVG benchmark mode; canvas tiles carry their own paper */
+  background: var(--paper-tone) var(--paper);
+}
+.tile {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+}
+div.tile {
+  mix-blend-mode: multiply;
+}
+
+.mist {
+  pointer-events: none;
+  background: linear-gradient(to top, rgb(236 226 204 / 0.7), rgb(236 226 204 / 0.4) 60%, rgb(236 226 204 / 0.25));
+  opacity: 0;
+  transition: opacity 3s ease;
+}
+.frame[data-phase="break"] .mist {
+  opacity: 1;
+}
+
+/* ---- inscription: time, seals, phase ---- */
+
+.inscription {
+  position: absolute;
+  top: 7cqh;
+  left: 16px;
+  right: 16px;
+  pointer-events: none;
+}
+/* painters leave the sky bare where the inscription goes */
+.inscription::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: -16px;
+  top: -7cqh;
+  width: 75%;
+  height: 160%;
+  background: radial-gradient(ellipse 70% 60% at 18% 30%, rgb(236 226 204 / 0.82), rgb(236 226 204 / 0.5) 55%, rgb(236 226 204 / 0) 100%);
+}
+.frame.compact .inscription::before {
+  display: none;
+}
+.time-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+}
+.time {
+  pointer-events: auto;
+  cursor: pointer;
+  font-family: var(--serif-display);
+  font-weight: 500;
+  font-size: max(30px, 23cqh);
+  line-height: 0.95;
+  letter-spacing: 0.01em;
+  font-variant-numeric: lining-nums tabular-nums;
+  color: var(--ink);
+  text-shadow:
+    0 0 2px var(--halo),
+    0 0 6px var(--halo),
+    0 0 14px rgb(236 226 204 / 0.75);
+  transition: color 1.6s ease;
+  outline: none;
+  border-radius: 4px;
+}
+.time:focus-visible {
+  box-shadow: 0 0 0 1.5px rgb(176 53 42 / 0.6);
+}
+.frame[data-phase="break"] .time {
+  color: var(--indigo);
+}
+.frame[data-status="paused"] .time,
+.frame[data-status="idle"] .time {
+  color: rgb(43 40 36 / 0.82);
+}
+.frame[data-phase="break"][data-status="paused"] .time {
+  color: rgb(71 87 102 / 0.82);
+}
+
+.phase {
+  margin: 0.3em 0 0 0.1em;
+  font-style: italic;
+  font-size: max(11.5px, 6cqh);
+  line-height: 1.25;
+  color: var(--wash);
+  text-shadow:
+    0 0 2px var(--halo),
+    0 0 6px var(--halo);
+  max-width: 24em;
+}
+
+.seals {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  max-width: 7.5em;
+  align-items: center;
+  font-size: max(11px, 5.5cqh);
+  color: var(--cinnabar);
+  font-style: italic;
+}
+.seal {
+  width: 0.62em;
+  height: 0.62em;
+  border-radius: 1.5px;
+  background: var(--cinnabar);
+  /* a thin carved frame inside the stamp */
+  box-shadow:
+    inset 0 0 0 1px var(--cinnabar),
+    inset 0 0 0 1.7px rgb(243 234 217 / 0.75);
+  opacity: 0.9;
+}
+.seal:nth-child(3n + 1) {
+  transform: rotate(-3deg);
+}
+.seal:nth-child(3n + 2) {
+  transform: rotate(2deg);
+}
+
+/* ---- controls (only while the mouse is over the window) ---- */
+
+.controls {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  padding: 2px;
+  border-radius: 999px;
+  background: rgb(236 226 204 / 0.82);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.frame:hover .controls,
+.controls:focus-within {
+  opacity: 1;
+}
+.controls button {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: rgb(43 40 36 / 0.78);
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+.controls button:hover {
+  background: rgb(43 40 36 / 0.08);
+  color: var(--ink);
+}
+.controls svg {
+  width: 17px;
+  height: 17px;
+}
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 1.5px solid rgb(176 53 42 / 0.7);
+  outline-offset: 2px;
+}
+
+/* ---- progress line ---- */
+
+.progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  pointer-events: none;
+}
+.progress-bar {
+  height: 100%;
+  background: var(--cinnabar);
+  opacity: 0.85;
+  transform-origin: left center;
+  transform: scaleX(0);
+  transition: background-color 1.6s ease;
+}
+.frame[data-phase="break"] .progress-bar {
+  background: var(--indigo);
+  opacity: 0.55;
+}
+
+/* ---- phase-end pulse: two slow breaths of cinnabar at the paper's edge ---- */
+
+.frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 0 26px 3px rgb(176 53 42 / 0.5);
+  opacity: 0;
+}
+.frame.pulse::after {
+  animation: breathe 2.6s ease-in-out;
+}
+@keyframes breathe {
+  0% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+  72% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ---- compact mode: just the time ---- */
+
+.frame.compact .landscape,
+.frame.compact .mist,
+.frame.compact .controls,
+.frame.compact .phase,
+.frame.compact .seals {
+  display: none;
+}
+.frame.compact .inscription {
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+.frame.compact .time {
+  font-size: 52cqh;
+}
+
+/* ---- settings sheet ---- */
+
+.settings {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  overflow-y: auto;
+  padding: 10px 16px 14px;
+  background: var(--paper-tone) var(--paper);
+  font-size: 13.5px;
+  line-height: 1.3;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+  user-select: none;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(43 40 36 / 0.25) transparent;
+}
+.settings.open {
+  opacity: 1;
+  transform: none;
+}
+.settings::-webkit-scrollbar {
+  width: 6px;
+}
+.settings::-webkit-scrollbar-thumb {
+  background: rgb(43 40 36 / 0.22);
+  border-radius: 3px;
+}
+.settings-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.settings h2 {
+  margin: 0;
+  font-family: var(--serif-display);
+  font-weight: 500;
+  font-size: 21px;
+}
+.settings h3 {
+  margin: 12px 0 2px;
+  font-weight: 400;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--wash);
+}
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 28px;
+}
+.row-action {
+  justify-content: flex-start;
+}
+.label {
+  flex: 1;
+}
+.control {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.unit,
+.value {
+  font-style: italic;
+  color: var(--wash);
+  font-size: 12.5px;
+  min-width: 2.6em;
+}
+.row-number .unit {
+  min-width: 0;
+}
+.settings input[type="number"] {
+  width: 3em;
+  padding: 1px 2px;
+  border: 0;
+  border-bottom: 1px solid rgb(43 40 36 / 0.3);
+  background: transparent;
+  font: inherit;
+  color: var(--ink);
+  text-align: right;
+  user-select: text;
+}
+.settings select {
+  padding: 1px 2px;
+  border: 0;
+  border-bottom: 1px solid rgb(43 40 36 / 0.3);
+  background: transparent;
+  font: inherit;
+  color: var(--ink);
+}
+
+/* toggles are seals: empty frame when off, stamped when on */
+.seal-toggle {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  border: 1.2px solid rgb(43 40 36 / 0.45);
+  border-radius: 3px;
+  background: transparent;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.seal-toggle:checked {
+  border-color: var(--cinnabar);
+  background: var(--cinnabar);
+  box-shadow: inset 0 0 0 1.5px var(--cinnabar), inset 0 0 0 2.4px rgb(243 234 217 / 0.8);
+}
+
+.settings input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 96px;
+  height: 16px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.settings input[type="range"]::-webkit-slider-runnable-track {
+  height: 2px;
+  background: rgb(43 40 36 / 0.25);
+  border-radius: 1px;
+}
+.settings input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  margin-top: -5px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+.choices {
+  display: inline-flex;
+  gap: 10px;
+}
+.choice,
+.link-button {
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--wash);
+  cursor: pointer;
+}
+.choice[aria-pressed="true"] {
+  color: var(--ink);
+  text-decoration: underline 1.5px var(--cinnabar);
+  text-underline-offset: 4px;
+}
+.link-button {
+  color: var(--ink);
+  text-decoration: underline dotted 1px;
+  text-underline-offset: 3px;
+}
+.link-button:hover,
+.choice:hover {
+  color: var(--cinnabar);
+}
+
+/* a tiny screen with a button in each corner */
+.corners {
+  position: relative;
+  width: 40px;
+  height: 26px;
+  border: 1.2px solid rgb(43 40 36 / 0.4);
+  border-radius: 3px;
+}
+.corner {
+  position: absolute;
+  width: 11px;
+  height: 7px;
+  padding: 0;
+  border: 0;
+  border-radius: 1.5px;
+  background: rgb(43 40 36 / 0.3);
+  cursor: pointer;
+}
+.corner:hover {
+  background: var(--cinnabar);
+}
+.corner-top-left {
+  top: 2px;
+  left: 2px;
+}
+.corner-top-right {
+  top: 2px;
+  right: 2px;
+}
+.corner-bottom-left {
+  bottom: 2px;
+  left: 2px;
+}
+.corner-bottom-right {
+  bottom: 2px;
+  right: 2px;
+}
+
+.about {
+  margin-top: 14px;
+  font-size: 12px;
+  font-style: italic;
+  color: var(--wash);
+}
+.about p {
+  margin: 2px 0;
+}
+.about .quit {
+  margin-top: 6px;
+  font-style: normal;
+  font-size: 13px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+  .frame.pulse::after {
+    animation-duration: 1.2s;
+  }
+}

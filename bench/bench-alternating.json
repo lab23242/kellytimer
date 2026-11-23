@@ -1,0 +1,48 @@
+{
+  "date": "2026-11-23T13:03:36.102Z",
+  "cpuModel": "Intel(R) Core(TM) i9-10900F CPU @ 2.80GHz",
+  "cores": 20,
+  "secondsPerRun": 120,
+  "results": [
+    {
+      "run": "canvas, real speed",
+      "cpuPctOfOneCore": 0.25,
+      "cpuPctOfMachine": 0.01,
+      "processes": 7,
+      "pageMB": 2.8,
+      "workerMB": 16.41,
+      "domNodes": null,
+      "tiles": null
+    },
+    {
+      "run": "svg, real speed",
+      "cpuPctOfOneCore": 1.06,
+      "cpuPctOfMachine": 0.05,
+      "processes": 7,
+      "pageMB": 2.79,
+      "workerMB": 16.44,
+      "domNodes": null,
+      "tiles": null
+    },
+    {
+      "run": "canvas, real speed",
+      "cpuPctOfOneCore": 0.39,
+      "cpuPctOfMachine": 0.02,
+      "processes": 7,
+      "pageMB": 2.8,
+      "workerMB": 16.43,
+      "domNodes": null,
+      "tiles": null
+    },
+    {
+      "run": "svg, real speed",
+      "cpuPctOfOneCore": 0.31,
+      "cpuPctOfMachine": 0.02,
+      "processes": 7,
+      "pageMB": 2.79,
+      "workerMB": 16.44,
+      "domNodes": null,
+      "tiles": null
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "name": "shanshui",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "A frameless Pomodoro timer with an endless shan-shui landscape scroll",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "tauri": "tauri",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "extract": "node scripts/extract-upstream.mjs",
+    "sounds": "node scripts/make-sounds.mjs",
+    "soak": "node scripts/soak.mjs",
+    "bench": "node scripts/bench.mjs"
+  },
+  "dependencies": {
+    "@fontsource/cormorant-garamond": "^5.3.0",
+    "@fontsource/eb-garamond": "^5.3.0",
+    "@tauri-apps/api": "^2.12.5",
+    "@tauri-apps/plugin-autostart": "^2.7.0",
+    "@tauri-apps/plugin-store": "^2.5.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@tauri-apps/cli": "^2.12.6",
+    "eslint": "^10.15.0",
+    "globals": "^17.14.0",
+    "puppeteer-core": "^25.18.1",
+    "vite": "^8.3.8",
+    "vitest": "^5.1.1"
+  }
+}

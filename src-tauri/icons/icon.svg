@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <!-- Shanshui app icon: an ink mountain carved into a vermilion seal. Drawn for this app. -->
+  <g>
+    <rect x="72" y="72" width="880" height="880" rx="96" fill="#b5372a"/>
+    <rect x="150" y="150" width="724" height="724" rx="44" fill="none" stroke="#f3ead9" stroke-width="30"/>
+    <!-- far peak -->
+    <path d="M205 690 C 300 650 360 560 420 470 C 450 425 470 420 492 452 C 520 494 545 528 590 560 L 590 690 Z" fill="#f3ead9"/>
+    <!-- main peak -->
+    <path d="M330 700 C 420 640 470 520 540 380 C 575 310 600 262 630 270 C 665 280 690 360 720 440 C 750 520 790 600 830 700 Z" fill="#f3ead9"/>
+    <!-- carved ridge strokes (texture) -->
+    <path d="M610 300 C 600 380 575 450 540 520" fill="none" stroke="#b5372a" stroke-width="22" stroke-linecap="round"/>
+    <path d="M660 360 C 662 430 650 500 625 570" fill="none" stroke="#b5372a" stroke-width="18" stroke-linecap="round"/>
+    <path d="M440 500 C 432 545 418 585 395 630" fill="none" stroke="#b5372a" stroke-width="16" stroke-linecap="round"/>
+    <!-- water -->
+    <path d="M220 760 L 520 760" stroke="#f3ead9" stroke-width="26" stroke-linecap="round"/>
+    <path d="M580 760 L 800 760" stroke="#f3ead9" stroke-width="26" stroke-linecap="round"/>
+    <path d="M330 815 L 690 815" stroke="#f3ead9" stroke-width="22" stroke-linecap="round"/>
+  </g>
+</svg>

@@ -1,0 +1,39 @@
+name: Release
+
+# Push a tag like v0.2.0 to build the Windows installer and attach it to a draft release.
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    name: Build the Windows installer
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "./src-tauri -> target"
+      - run: npm ci
+      - run: npm test
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: Shanshui ${{ github.ref_name }}
+          releaseBody: |
+            To install, download **Shanshui_..._x64-setup.exe** below and double-click it.
+            Step-by-step help (including the "Windows protected your PC" message): see INSTALL.md in the repository.
+          releaseDraft: true
+          prerelease: false
+          args: --bundles nsis
