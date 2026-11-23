@@ -51,7 +51,7 @@ src-tauri/src/
 
 ## Developing on Linux
 
-Prerequisites: Node 24 (npm 11; the lockfile needs it), Rust stable and Tauri's Linux deps:
+Prerequisites: Node 22.12+ (24 recommended), Rust stable and Tauri's Linux deps:
 
 ```bash
 sudo apt install libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev libxdo-dev libssl-dev libasound2-dev
