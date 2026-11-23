@@ -97,6 +97,7 @@ Judgement calls made while building kellytimer, grouped by area. Numbers come fr
 - **Version is single-sourced** from `package.json` (`tauri.conf.json` has `"version": "../package.json"`). `Cargo.toml` still needs a manual bump; it doesn't affect the installer name.
 - **Bundle targets** are `"all"` in the config, so local Linux builds still produce .deb/.AppImage. The release workflow passes `--bundles nsis`, so the release gets only the per-user NSIS installer.
 - **Release workflow** runs the unit tests before building, caches npm (`setup-node`) and Rust (`Swatinem/rust-cache`), and creates a draft release.
+- **CI uses Node 24 (npm 11).** The lockfile is written by npm 11, and npm 10 (Node 22) rejects it as out of sync over optional `@emnapi` packages. The first tagged run failed on exactly that.
 - **CI** runs lint + tests + build, plus `cargo check` and `cargo clippy -D warnings`, on Ubuntu (cheaper and faster than Windows runners). The Rust job uses a placeholder `dist/` because `generate_context!` needs it to exist.
 - **Vendored upstream has no nested `.git`** (it would become a broken submodule). The upstream commit is recorded in `vendor/shan-shui-inf/UPSTREAM_COMMIT`.
 - **Licence note:** upstream's Perlin noise is adapted from p5.js, which is LGPL-2.1. Shipping it as readable JavaScript inside the app satisfies the usual reading of the LGPL for interpreted code, but it's flagged here in case that matters for distribution.
