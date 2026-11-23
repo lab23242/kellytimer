@@ -32,7 +32,7 @@ export async function openApp(page, query) {
 
 /**
  * Total CPU time (ms) of the process named `rootName` and all its descendants
- * (for Tauri: shanshui.exe plus its WebView2 browser, renderer and GPU processes).
+ * (for Tauri: kellytimer.exe plus its WebView2 browser, renderer and GPU processes).
  */
 export function processTreeCpuMs(rootName) {
   if (process.platform === "win32") {

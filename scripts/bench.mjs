@@ -1,12 +1,12 @@
 // CPU benchmark: rasterised canvas tiles vs live SVG tiles, measured as CPU time of the
 // whole app process tree while the timer runs. See scripts/lib/harness.mjs for setup.
-// Usage: node scripts/bench.mjs [secondsPerRun=60] [processName=shanshui.exe] [runs=0,1,2,3,4]
+// Usage: node scripts/bench.mjs [secondsPerRun=60] [processName=kellytimer.exe] [runs=0,1,2,3,4]
 //   runs: comma-separated indexes into RUNS, repeats allowed (e.g. 1,2,1,2 to alternate)
 import { writeFileSync, mkdirSync } from "node:fs";
 import { attach, cores, cpuModel, heapAfterGc, openApp, processTreeCpuMs, sleep } from "./lib/harness.mjs";
 
 const seconds = Number(process.argv[2] || 60);
-const proc = process.argv[3] || "shanshui.exe";
+const proc = process.argv[3] || "kellytimer.exe";
 const WARMUP_MS = 25_000;
 
 const RUNS = [

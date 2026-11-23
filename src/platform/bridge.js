@@ -10,7 +10,7 @@ import * as autostart from "@tauri-apps/plugin-autostart";
 export const isTauri = typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
 
 /** Shared with the Rust side (STORE_FILE in src-tauri/src/lib.rs). */
-const STORE_FILE = "shanshui.json";
+const STORE_FILE = "kellytimer.json";
 const LOCAL_PREFIX = "shanshui:";
 
 function reportError(what, err) {

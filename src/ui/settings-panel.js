@@ -200,8 +200,8 @@ export function createSettingsPanel({ onChange, onAction, onClose, version }) {
       "footer",
       { class: "about" },
       el("p", {}, "Landscape generator: shan-shui-inf by Lingdong Huang, MIT"),
-      el("p", {}, `Shanshui ${version}`),
-      el("button", { type: "button", class: "link-button quit", onclick: () => onAction("quit") }, "Quit Shanshui"),
+      el("p", {}, `kellytimer ${version}`),
+      el("button", { type: "button", class: "link-button quit", onclick: () => onAction("quit") }, "Quit kellytimer"),
     ),
   );
 

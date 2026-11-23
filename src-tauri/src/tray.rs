@@ -23,11 +23,11 @@ pub fn create<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<()> {
     let skip = MenuItem::with_id(app, "skip", "Skip to next", true, None::<&str>)?;
     let settings = MenuItem::with_id(app, "settings", "Settings", true, None::<&str>)?;
     let separator = PredefinedMenuItem::separator(app)?;
-    let quit = MenuItem::with_id(app, "quit", "Quit Shanshui", true, None::<&str>)?;
+    let quit = MenuItem::with_id(app, "quit", "Quit kellytimer", true, None::<&str>)?;
     let menu = Menu::with_items(app, &[&toggle, &start_pause, &skip, &settings, &separator, &quit])?;
 
     let mut builder = TrayIconBuilder::with_id(TRAY_ID)
-        .tooltip("Shanshui")
+        .tooltip("kellytimer")
         .menu(&menu)
         .show_menu_on_left_click(false)
         .on_menu_event(|app, event| match event.id.as_ref() {

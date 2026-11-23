@@ -1,4 +1,4 @@
-//! Shanshui: a frameless Pomodoro timer. The timer logic and drawing live in the webview
+//! kellytimer: a frameless Pomodoro timer. The timer logic and drawing live in the webview
 //! (src/); this side owns the window, tray, phase-end alarm, notifications and sound.
 
 mod alarm;
@@ -15,7 +15,7 @@ use tauri_plugin_store::StoreExt;
 use tauri_plugin_window_state::{AppHandleExt, StateFlags, WindowExt, DEFAULT_FILENAME};
 
 /// Shared with the frontend (src/platform/bridge.js).
-pub const STORE_FILE: &str = "shanshui.json";
+pub const STORE_FILE: &str = "kellytimer.json";
 const MAIN: &str = "main";
 
 static MOVE_GENERATION: AtomicU64 = AtomicU64::new(0);
@@ -74,7 +74,7 @@ fn tray_notice_once<R: Runtime>(app: &AppHandle<R>) {
         "show tray notice",
         app.notification()
             .builder()
-            .title("Shanshui is still running")
+            .title("kellytimer is still running")
             .body("It's waiting in the tray. Click the ^ arrow next to the clock to bring it back.")
             .show(),
     );
@@ -210,5 +210,5 @@ pub fn run() {
             _ => {}
         })
         .run(tauri::generate_context!())
-        .expect("error while running Shanshui");
+        .expect("error while running kellytimer");
 }

@@ -138,10 +138,10 @@ function syncAlarm(userAction) {
 
 function syncTray() {
   const label = T.PHASE_LABELS[timer.phase];
-  let tip = "Shanshui";
-  if (timer.status === "running") tip = `Shanshui: ${label} until ${clockTime(timer.endsAt)}`;
-  else if (timer.status === "paused") tip = `Shanshui: ${label} paused, ${formatTime(timer.remainingMs)} left`;
-  else if (timer.status === "finished") tip = `Shanshui: ${label} done`;
+  let tip = "kellytimer";
+  if (timer.status === "running") tip = `kellytimer: ${label} until ${clockTime(timer.endsAt)}`;
+  else if (timer.status === "paused") tip = `kellytimer: ${label} paused, ${formatTime(timer.remainingMs)} left`;
+  else if (timer.status === "finished") tip = `kellytimer: ${label} done`;
   os.updateTray(tip, timer.status === "running");
 }
 
@@ -404,5 +404,5 @@ async function boot() {
 
 boot().catch((err) => {
   console.error("shanshui: failed to start", err);
-  phaseEl.textContent = "Something went wrong while starting. Please restart Shanshui.";
+  phaseEl.textContent = "Something went wrong while starting. Please restart kellytimer.";
 });

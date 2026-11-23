@@ -1,10 +1,10 @@
-# Installing Shanshui
+# Installing kellytimer
 
-Shanshui is a small timer for focused work. A Chinese landscape painting slowly scrolls behind the time while you work. It takes about a minute to install.
+kellytimer is a small timer for focused work. A Chinese landscape painting slowly scrolls behind the time while you work. It takes about a minute to install.
 
 ## 1. Download it
 
-Open the download page you were sent (it ends in `/releases`). Under **Assets**, click the file whose name ends in **`-setup.exe`**, for example `Shanshui_0.1.0_x64-setup.exe`. It's a small file and downloads in a few seconds.
+Open the download page you were sent (it ends in `/releases`). Under **Assets**, click the file whose name ends in **`-setup.exe`**, for example `kellytimer_0.1.0_x64-setup.exe`. It's a small file and downloads in a few seconds.
 
 ## 2. Open it
 
@@ -18,7 +18,9 @@ Windows shows this message for apps from small makers who haven't paid for a sec
 
 ## 3. Install
 
-Click **Install**, then **Finish**. You don't need an administrator password.
+Click **Install**. You don't need an administrator password.
+
+On the last screen, leave **Create desktop shortcut** ticked if you'd like an icon on your desktop (you'll find kellytimer in the Start menu either way). Then click **Finish**.
 
 ## 4. Using it
 
@@ -34,14 +36,14 @@ Each finished focus session leaves a small red seal next to the time. A new pain
 
 ## Finding it again
 
-When you close Shanshui with the **×**, it keeps running quietly so your timer isn't lost. To bring it back:
+When you close kellytimer with the **×**, it keeps running quietly so your timer isn't lost. To bring it back:
 
 1. Look at the bottom-right of your screen, next to the clock.
 2. Click the small **^** arrow.
-3. Click the red Shanshui icon.
+3. Click the red kellytimer icon.
 
-To close it completely, right-click that icon and choose **Quit Shanshui**.
+To close it completely, right-click that icon and choose **Quit kellytimer**.
 
 ## Uninstalling
 
-Open **Settings** (the Windows one, from the Start menu) → **Apps** → **Installed apps**. Find **Shanshui**, click the **⋯** next to it, then **Uninstall**.
+Open **Settings** (the Windows one, from the Start menu) → **Apps** → **Installed apps**. Find **kellytimer**, click the **⋯** next to it, then **Uninstall**.

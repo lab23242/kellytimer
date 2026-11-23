@@ -1,4 +1,4 @@
-# Shanshui
+# kellytimer
 
 A small, frameless Pomodoro timer for Windows 11. Behind the time, an endless procedural shan-shui (山水) landscape from [shan-shui-inf](https://github.com/LingDong-/shan-shui-inf) pans past while you focus, on an old-scroll yellow paper. Each focus session travels exactly 48 landscape chunks (about 4.7 px/s in the small window; adjustable in Settings). Each day has its own painting, and today's journey picks up where you left it.
 
@@ -30,7 +30,7 @@ src-tauri/src/
   tray.rs                         tray icon and menu
 ```
 
-**Data flow.** The timer is a pure state machine: `{phase, status, endsAt, remainingMs, …}`. Remaining time is always `endsAt - now`. The scroll position is `journey.anchor + speed(phase) × elapsed`, so it is also derived, never accumulated. Every transition re-anchors the journey (`carry`), so skip, reset, phase change and speed change never make the painting jump. State is saved to the store file (`shanshui.json` in the app data folder) on every transition.
+**Data flow.** The timer is a pure state machine: `{phase, status, endsAt, remainingMs, …}`. Remaining time is always `endsAt - now`. The scroll position is `journey.anchor + speed(phase) × elapsed`, so it is also derived, never accumulated. Every transition re-anchors the journey (`carry`), so skip, reset, phase change and speed change never make the painting jump. State is saved to the store file (`kellytimer.json` in the app data folder) on every transition.
 
 **Timing.** When a phase starts, the frontend asks Rust to `schedule_alarm` at the real wall-clock end time. Rust waits in 5-second slices against the system clock. At the end it shows the toast, plays the chime and emits `alarm`. If the end is more than 90 s in the past (the laptop slept), it stays silent and the UI just shows the phase as finished. While the window is visible, the timer logic wakes once per displayed second, and the scroller moves the strip on its own speed-paced timer. While it is hidden it does no work at all.
 
@@ -106,7 +106,7 @@ Results go to `bench/`. Other scripts: `npm run sounds` regenerates the chimes; 
 git tag v0.2.0 && git push origin v0.2.0
 ```
 
-3. The **Release** workflow builds on `windows-latest` and creates a **draft** GitHub release with `Shanshui_<version>_x64-setup.exe` attached. Check it, then click **Publish**. Send people the release page link plus INSTALL.md.
+3. The **Release** workflow builds on `windows-latest` and creates a **draft** GitHub release with `kellytimer_<version>_x64-setup.exe` attached. Check it, then click **Publish**. Send people the release page link plus INSTALL.md.
 
 The installer is unsigned on purpose. It installs per-user (`installMode: currentUser`, no UAC prompt) and downloads the WebView2 bootstrapper only if WebView2 is missing (Windows 11 always has it).
 
@@ -114,7 +114,7 @@ The installer is unsigned on purpose. It installs per-user (`installMode: curren
 
 Things that can't be verified on Linux. Items marked ✓ were checked on Windows 10 during development (see DECISIONS.md), but should still be confirmed on Windows 11.
 
-1. **Install:** run the `-setup.exe`. Expect SmartScreen's **More info → Run anyway**, no UAC/admin prompt, and the install folder under `%LOCALAPPDATA%\Shanshui`.
+1. **Install:** run the `-setup.exe`. Expect SmartScreen's **More info → Run anyway**, no UAC/admin prompt, and the install folder under `%LOCALAPPDATA%\kellytimer`.
 2. **First placement:** the timer appears bottom-right, 16 px above the taskbar. Repeat at 125% and 150% display scaling (Settings → Display → Scale); it should still sit 16 px from the edges and be the same physical size relative to text. ✓ (100%)
 3. **Window looks:** rounded corners with nothing showing outside them, no 1 px border, no shadow, no taskbar button. ✓ (Win10)
 4. **Drag** the painting to move it. Click the time: it starts and pauses. Double-click: compact time-only view, and double-click again to return. Hover: controls fade in. ✓ (in browser)
@@ -126,4 +126,4 @@ Things that can't be verified on Linux. Items marked ✓ were checked on Windows
 10. **Sleep:** start a 1-minute focus, put the laptop to sleep for 3+ minutes, wake it. The timer shows "Focus done…", with no burst of toasts or chimes.
 11. **Always on top / opacity / start with Windows:** toggle each in Settings. For "Open when Windows starts", sign out and back in.
 12. **Uninstall** from Settings → Apps → Installed apps. It goes away cleanly.
-13. **CPU:** leave it running a focus session and check Task Manager. Shanshui plus its "Microsoft Edge WebView2" children should average well under 3%.
+13. **CPU:** leave it running a focus session and check Task Manager. kellytimer plus its "Microsoft Edge WebView2" children should average well under 3%.

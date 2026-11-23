@@ -30,9 +30,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tagName: ${{ github.ref_name }}
-          releaseName: Shanshui ${{ github.ref_name }}
+          releaseName: kellytimer ${{ github.ref_name }}
           releaseBody: |
-            To install, download **Shanshui_..._x64-setup.exe** below and double-click it.
+            To install, download **kellytimer_..._x64-setup.exe** below and double-click it.
             Step-by-step help (including the "Windows protected your PC" message): see INSTALL.md in the repository.
           releaseDraft: true
           prerelease: false

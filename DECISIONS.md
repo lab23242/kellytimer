@@ -1,6 +1,6 @@
 # Decisions
 
-Judgement calls made while building Shanshui, grouped by area. Numbers come from the runs described at the end.
+Judgement calls made while building kellytimer, grouped by area. Numbers come from the runs described at the end.
 
 ## Environment
 
@@ -20,7 +20,7 @@ Judgement calls made while building Shanshui, grouped by area. Numbers come from
 ## Rendering and performance
 
 - **Generation in a Web Worker** rather than `requestIdleCallback` on the main thread. A chunk takes 108 ms on average and up to 957 ms (Node, i9-10900F), and a synchronous 100–400 ms task inside an idle callback still blocks the main thread. The worker keeps it off the UI thread entirely. If a worker can't be created, generation falls back to idle callbacks (`setTimeout` where `requestIdleCallback` is missing). Rasterisation (drawing the decoded SVG onto the canvas) runs in an idle callback, never in an animation frame.
-- **Rasterised canvas tiles vs live SVG: kept canvas.** Measured in the real app (WebView2 157, debug Rust build, 340×200 window at 100% scaling, i9-10900F with 20 logical cores) as CPU time of the whole process tree (shanshui.exe + 6 WebView2 processes) while a focus session runs:
+- **Rasterised canvas tiles vs live SVG: kept canvas.** Measured in the real app (WebView2 157, debug Rust build, 340×200 window at 100% scaling, i9-10900F with 20 logical cores) as CPU time of the whole process tree (kellytimer.exe + 6 WebView2 processes) while a focus session runs:
 
   | run (60 s unless noted) | % of one core | % of machine |
   |---|---|---|
@@ -70,12 +70,12 @@ Judgement calls made while building Shanshui, grouped by area. Numbers come from
 - **Resizing keeps the nearest corner fixed**, so a timer in the bottom-right grows up and to the left. The result is clamped to the work area.
 - **Position is saved** 800 ms after a drag ends, on hide and on quit.
 - **Size presets:** Small 340×200, Medium 420×248, Large 520×306 (logical px, same 1.7:1 shape). Compact 156×60. Compact mode is remembered.
-- **× and "tuck away" both hide to the tray.** With `skipTaskbar` there is no taskbar button to return to, so both lead to the tray. × also shows a one-time toast ("Shanshui is still running…"). A tooltip can't be shown from a hidden window, so the notice is a toast. Alt+F4 does the same. **Quit** (tray menu or the bottom of Settings) really exits.
+- **× and "tuck away" both hide to the tray.** With `skipTaskbar` there is no taskbar button to return to, so both lead to the tray. × also shows a one-time toast ("kellytimer is still running…"). A tooltip can't be shown from a hidden window, so the notice is a toast. Alt+F4 does the same. **Quit** (tray menu or the bottom of Settings) really exits.
 - **The tray icon's left click toggles the window.** Right click opens the menu: Show / hide, Start/Pause (label follows the state), Skip to next, Settings, Quit. The tooltip shows the phase and its end time, which only changes on transitions, so it is never refreshed per second.
 - **Chimes are played by Rust (rodio)**, not the webview, so they sound on time even if WebView2 is throttled. The WAVs are embedded in the binary. Linux needs `libasound2-dev` to build. The toast is marked silent so the chime is the only sound. When "Silent" is on there is no sound at all.
 - **Sounds are self-synthesised** (`scripts/make-sounds.mjs`, CC0): singing bowl (inharmonic beating partials), plucked string (qin-like, with a pluck-position notch and slight vibrato) and small bell. Peaks are normalised to −6 dBFS so nothing startles.
 - **Phase-end pulse:** two slow breaths of cinnabar at the paper's edge over 2.6 s. It doesn't flash the window or move it.
-- **Single store file** `shanshui.json` (app data folder), shared by Rust and JS.
+- **Single store file** `kellytimer.json` (app data folder), shared by Rust and JS.
 - **Content Security Policy** is restrictive: self-hosted scripts and fonts, `blob:` images for tile rasterising, no remote origins.
 
 ## Look and feel
@@ -90,6 +90,9 @@ Judgement calls made while building Shanshui, grouped by area. Numbers come from
 - **Icon:** an ink mountain and water lines carved into a vermilion seal, drawn as SVG and converted with `tauri icon`. The SVG's turbulence filter was dropped because the icon rasteriser (resvg) renders it as noise.
 
 ## Build and release
+
+- **Name: kellytimer** (lowercase, as requested; renamed from the working title "Shanshui"). It applies to the product name, window title, tray, toasts, installer, `.exe` (`kellytimer.exe`, Cargo package `kellytimer`), store file (`kellytimer.json`) and identifier (`app.kellytimer`, so its data lives in `%APPDATA%pp.kellytimer`). Internal names that nobody sees (the landscape seed prefix `shanshui:`, log prefixes, the `src/shanshui/` folder) were kept, so each day's painting is unchanged.
+- **Desktop shortcut:** Tauri's NSIS installer already ends with a "Create desktop shortcut" checkbox (ticked by default) next to "Run kellytimer". A Start menu shortcut is always created. No custom installer script was needed.
 
 - **Version is single-sourced** from `package.json` (`tauri.conf.json` has `"version": "../package.json"`). `Cargo.toml` still needs a manual bump; it doesn't affect the installer name.
 - **Bundle targets** are `"all"` in the config, so local Linux builds still produce .deb/.AppImage. The release workflow passes `--bundles nsis`, so the release gets only the per-user NSIS installer.
@@ -115,7 +118,7 @@ All run on Windows 10 22H2 (x64), WebView2 157, on 2026-11-23.
   | worker JS heap | 11.8 MB | 20.6 MB | 29.1 MB |
 
   The page heap is flat at 2.8 MB from the second sample onwards. The worker heap moves between 14 and 29 MB with the size of the 12 cached chunks (about 2 MB of SVG each), with no upward trend. Raw data: `bench/soak-results.json`.
-- **NSIS bundle:** `npx tauri build --bundles nsis` built `Shanshui_0.1.0_x64-setup.exe` (3.3 MB). The generated `installer.nsi` has `INSTALLMODE "currentUser"`, so `RequestExecutionLevel user` (no UAC prompt), installs to `$LOCALAPPDATA\Shanshui`, and has `INSTALLWEBVIEW2MODE "downloadBootstrapper"`. The release `shanshui.exe` (6.3 MB) was launched: it loads under the production CSP with no console errors or CSP violations, the worker and both fonts load, tiles render, and the tray icon appears. The installer itself was not run, to avoid installing onto the development machine.
+- **NSIS bundle:** `npx tauri build --bundles nsis` built `kellytimer_0.1.0_x64-setup.exe` (3.3 MB). The generated `installer.nsi` has `INSTALLMODE "currentUser"`, so `RequestExecutionLevel user` (no UAC prompt), installs to `$LOCALAPPDATA\kellytimer`, and has `INSTALLWEBVIEW2MODE "downloadBootstrapper"`. The release `kellytimer.exe` (6.3 MB) was launched: it loads under the production CSP with no console errors or CSP violations, the worker and both fonts load, tiles render, and the tray icon appears. The installer itself was not run, to avoid installing onto the development machine.
 - **Workflow YAML** parses (PyYAML), and every step has exactly one of `uses`/`run`. It has not run on GitHub yet: there is no repository/remote in this folder.
 - **Code review pass** (independent reviewer agent) found 5 issues; all fixed and re-verified (lint, tests, build, clippy):
   1. `loop()` called from the alarm event could leave an orphaned wake-up timer behind, so chains piled up with each phase end. It now clears the pending timer first.
